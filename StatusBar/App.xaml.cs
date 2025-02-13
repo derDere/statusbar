@@ -14,6 +14,8 @@ namespace StatusBar {
   /// </summary>
   public partial class App : Application {
 
+    public const int HEIGHT = 18;
+
     DispatcherTimer Timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(10) };
 
     internal Tools.ScreenMarginManager screenMarginManager = new Tools.ScreenMarginManager(() => new Window.Bar());
@@ -21,7 +23,12 @@ namespace StatusBar {
     protected override void OnStartup(StartupEventArgs e) {
       base.OnStartup(e);
 
-      screenMarginManager.AddBottomMargin(18);
+      if (Config.IsTopPosition) {
+        screenMarginManager.AddTopMargin(HEIGHT);
+      }
+      else {
+        screenMarginManager.AddBottomMargin(HEIGHT);
+      }
       screenMarginManager.Update();
 
       Timer.Tick += (s, ev) => screenMarginManager.Update();

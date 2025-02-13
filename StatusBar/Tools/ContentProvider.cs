@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -22,11 +24,15 @@ namespace StatusBar.Tools {
     #endregion
 
     #region Private Generators
+    private static long SecondsSinceMidnight(DateTime t) {
+      long e = 0;
+      e += t.Hour * 60 * 60;
+      e += t.Minute * 60;
+      e += t.Second;
+      return e;
+    }
     private static long MilliSecondsSinceMidnight(DateTime t) {
-      int e = 0;
-      e += t.Hour * 60 * 60 * 1000;
-      e += t.Minute * 60 * 1000;
-      e += t.Second * 1000;
+      long e = SecondsSinceMidnight(t) * 1000;
       e += t.Millisecond;
       return e;
     }
@@ -173,6 +179,74 @@ namespace StatusBar.Tools {
       }
       return content.Replace("\r", "").Replace("\n", "");
     }
+
+    public static string About(string _) {
+      string[] lines = new string[] {
+        "About StatusBar",
+        "Developed by: github.com/derDere",
+        "License: GNU GENERAL PUBLIC LICENSE V3",
+        "Version: " + Application.ProductVersion,
+        "Language: C#.Net"
+      };
+      List<string> doubleLines = new List<string>();
+      foreach (string line in lines) {
+        doubleLines.Add(line);
+        doubleLines.Add(line);
+      }
+      long sec = SecondsSinceMidnight(DateTime.Now);
+      int index = ((int)sec % doubleLines.Count);
+      return doubleLines[index];
+    }
+
+    public static string Rainbow(string _) {
+      const int STEP = 255 / 10;
+      const int MAX = 255 / STEP;
+
+      const int R2Y = 1 * MAX; // RED to YELLOW 0 - MAX
+      const int Y2G = 2 * MAX; // YELLOW to GREEN MAX - 2*MAX
+      const int G2C = 3 * MAX; // GREEN to CYAN 2*MAX - 3*MAX
+      const int C2B = 4 * MAX; // CYAN to BLUE 3*MAX - 4*MAX
+      const int B2M = 5 * MAX; // BLUE to MAGENTA 4*MAX - 5*MAX
+      const int M2R = 6 * MAX; // MAGENTA to RED 5*MAX - 6*MAX
+
+      int v = (int)SecondsSinceMidnight(DateTime.Now) % (M2R);
+      int r = 0, g = 0, b = 0;
+
+      if (v < R2Y) {
+        r = 255;
+        g = (v % MAX) * STEP;
+      }
+      else if (v < Y2G) {
+        r = 255 - (v % MAX) * STEP;
+        g = 255;
+      }
+      else if (v < G2C) {
+        g = 255;
+        b = (v % MAX) * STEP;
+      }
+      else if (v < C2B) {
+        g = 255 - (v % MAX) * STEP;
+        b = 255;
+      }
+      else if (v < B2M) {
+        b = 255;
+        r = (v % MAX) * STEP;
+      }
+      else if (v < M2R) {
+        b = 255 - (v % MAX) * STEP;
+        r = 255;
+      }
+
+      return $"#{r:X2}{g:X2}{b:X2}";
+    }
+
+    public static string Guid(string _) {
+      return System.Guid.NewGuid().ToString();
+    }
+
+    public static string Rnd(string _) {
+      return RND_GEN.Next().ToString();
+    }
     #endregion
 
     #region Content Keys
@@ -186,6 +260,10 @@ namespace StatusBar.Tools {
     public const string HOST = "Host";
     public const string IP = "IP";
     public const string BATTERY = "Battery";
+    public const string ABOUT = "About";
+    public const string RAINBOW = "Rainbow";
+    public const string GUID = "Guid";
+    public const string RND = "Rnd";
 
     public const string ENV_PATTERN = @"(\$\()(env:)(.*?)(\))";
     public const string RUN_PATTERN = @"(\$\()(run:)(.*?)(\))";
@@ -202,6 +280,7 @@ namespace StatusBar.Tools {
     #endregion
 
     #region Privates
+    private readonly static Random RND_GEN = new Random();
     private readonly Dictionary<string, Func<string, string>> generators;
     private readonly Dictionary<string, string> _infos;
     #endregion
@@ -234,6 +313,10 @@ namespace StatusBar.Tools {
       AddFixedContent(HOST, "Machine name", MachineName);
       AddFixedContent(IP, "IP address", IpAddress);
       AddFixedContent(BATTERY, "Battery level in %", Battery);
+      AddFixedContent(ABOUT, "About Infos", About);
+      AddFixedContent(RAINBOW, "Rainbow", Rainbow);
+      AddFixedContent(GUID, "GUID", Guid);
+      AddFixedContent(RND, "Random number", Rnd);
 
       // Add environment variable pattern
       string env_sequence = "$(env:VAR)";
@@ -253,6 +336,7 @@ namespace StatusBar.Tools {
     #endregion
 
     #region Actions
+    [DebuggerHidden]
     public string ApplyTo(string content) {
       string result = content;
       foreach (string pattern in generators.Keys) {

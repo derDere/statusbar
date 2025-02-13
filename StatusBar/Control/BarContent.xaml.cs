@@ -43,6 +43,34 @@ namespace StatusBar.Control {
       Timer_Tick();
     }
 
+    private static Tuple<FontFamily, Brush, Brush> GetStyle() {
+      FontFamily font;
+      try {
+        font = new FontFamily(contentProvider.ApplyTo(Config.Font));
+      }
+      catch (Exception) {
+        font = new FontFamily(Config.DEFAULT_FONT);
+      }
+
+      Brush color;
+      try {
+        color = (Brush)(new BrushConverter().ConvertFromString(contentProvider.ApplyTo(Config.TextColor)));
+      }
+      catch (Exception) {
+        color = (Brush)(new BrushConverter().ConvertFromString(Config.DEFAULT_COLOR));
+      }
+
+      Brush background;
+      try {
+        background = (Brush)(new BrushConverter().ConvertFromString(contentProvider.ApplyTo(Config.BackgroundColor)));
+      }
+      catch (Exception) {
+        background = (Brush)(new BrushConverter().ConvertFromString(Config.DEFAULT_BACKGROUND));
+      }
+
+      return new Tuple<FontFamily, Brush, Brush>(font, color, background);
+    }
+
     private void ReGenerateContent() {
       ClearContent();
       GenerateContent();
@@ -56,6 +84,11 @@ namespace StatusBar.Control {
 
     private void GenerateContent() {
       string[] lines = Config.Lines.ToArray();
+
+      (FontFamily font, Brush color, Brush background) = GetStyle();
+      UC.FontFamily = font;
+      UC.Foreground = color;
+      UC.Background = background;
 
       foreach (string line in lines) {
         Grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
@@ -71,9 +104,10 @@ namespace StatusBar.Control {
           vb.HorizontalAlignment = HorizontalAlignment.Right;
         }
         TextBox txb = new TextBox() {
+          FontFamily = font,
+          Foreground = color,
+          Background = Brushes.Transparent,
           Text = contentProvider.ApplyTo(line),
-          Background = Brushes.Black,
-          Foreground = Brushes.Silver,
           BorderThickness = new Thickness(0),
           IsReadOnly = true,
           Tag = line,
@@ -90,6 +124,12 @@ namespace StatusBar.Control {
     }
 
     private void Timer_Tick(object sender = null, EventArgs e = null) {
+      (FontFamily font, Brush color, Brush background) = GetStyle();
+
+      UC.FontFamily = font;
+      UC.Foreground = color;
+      UC.Background = background;
+
       foreach (TextBox txb in textBoxes) {
         if (txb.Tag is string content) {
           int ss = txb.SelectionStart;
@@ -97,6 +137,8 @@ namespace StatusBar.Control {
           txb.Text = contentProvider.ApplyTo(content);
           txb.SelectionStart = ss;
           txb.SelectionLength = sl;
+          txb.FontFamily = font;
+          txb.Foreground = color;
         }
       }
     }
@@ -114,6 +156,17 @@ namespace StatusBar.Control {
 
     private void CloseMI_Click(object sender, RoutedEventArgs e) {
       App.Current.Shutdown();
+    }
+
+    private void ShowConfigMI_Click(object sender, RoutedEventArgs e) {
+      // Open Explorer and show the file in a folder window
+      string path = Config.FileName();
+      if (
+        !string.IsNullOrEmpty(path) &&
+        System.IO.File.Exists(path)
+      ) {
+        System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + path + "\"");
+      }
     }
   }
 }
