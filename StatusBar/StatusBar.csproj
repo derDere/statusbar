@@ -67,6 +67,7 @@
       <DependentUpon>Tile.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\ContentProvider.cs" />
+    <Compile Include="Tools\WindowsKeyInterceptor.cs" />
     <Compile Include="Window\Bar.cs">
       <SubType>Form</SubType>
     </Compile>

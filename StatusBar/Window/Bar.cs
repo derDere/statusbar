@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace StatusBar.Window {
   public class Bar : System.Windows.Forms.Form {
 
     private BarContent content;
     private AppMenu menu = null;
+    private WindowsKeyInterceptor winKeys;
 
     public Bar() : base() {
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -26,6 +28,17 @@ namespace StatusBar.Window {
       this.Controls.Add(host);
 
       menu = new AppMenu(this);
+
+      if (Config.UseWindowsKey) {
+        winKeys = new WindowsKeyInterceptor();
+        winKeys.SuppressSystemHandling = true;
+        winKeys.WindowsKeyEvent += this.WinKeys_WindowsKeyEvent;
+        winKeys.Start();
+      }
+    }
+
+    private void WinKeys_WindowsKeyEvent(object sender, WindowsKeyEventArgs e) {
+      menu.IsOpen = true;
     }
 
     private void BarContent_MenuButton_Clicked(object sender, EventArgs e) {

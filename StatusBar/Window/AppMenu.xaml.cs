@@ -1,4 +1,5 @@
 ﻿using StatusBar.Control;
+using StatusBar.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace StatusBar.Window {
   /// <summary>
@@ -40,6 +42,17 @@ namespace StatusBar.Window {
 
     public AppMenu(Bar parent) {
       InitializeComponent();
+
+      Brush bru;
+      try {
+        bru = (Brush)(new BrushConverter().ConvertFromString(BarContent.contentProvider.ApplyTo(Config.BackgroundColor)));
+      }
+      catch (Exception) {
+        bru = (Brush)(new BrushConverter().ConvertFromString(Config.DEFAULT_BACKGROUND));
+      }
+      bru.Opacity = 0.8;
+      Border.Background = bru;
+
       bar = parent;
       ReloadIcons();
     }

@@ -16,7 +16,7 @@
             <MenuItem x:Name="ReloadMI" Icon="{StaticResource ReloadIcon}" Header="Reload Icons" Click="ReloadMI_Click"/>
         </ContextMenu>
     </Window.ContextMenu>
-    <Border x:Name="Border" Background="#CC000000" BorderThickness="1" BorderBrush="#000">
+    <Border x:Name="Border" Background="#CC000000" BorderThickness="0">
         <Grid x:Name="ContentGrid" Margin="2">
 
         </Grid>

@@ -37,7 +37,7 @@ namespace StatusBar.Control {
       GlobalMenuButtonClicked?.Invoke(e);
     }
 
-    private static Tools.ContentProvider contentProvider = null;
+    internal static Tools.ContentProvider contentProvider = null;
 
     private DispatcherTimer timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(1) };
 

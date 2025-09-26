@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StatusBar.Tools;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -131,6 +132,16 @@ namespace StatusBar.Control {
 
     private void UpdateDisplay() {
       widgetTicket.Stop();
+
+      FontFamily font;
+      try {
+        font = new FontFamily(BarContent.contentProvider.ApplyTo(Config.Font));
+      }
+      catch (Exception) {
+        font = new FontFamily(Config.DEFAULT_FONT);
+      }
+      TitleTxb.FontFamily = font;
+      IconCC.FontFamily = font;
 
       if (myConfig.IsCategory) {
         Border.Margin = new Thickness(2);

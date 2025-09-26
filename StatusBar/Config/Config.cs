@@ -30,7 +30,8 @@ namespace StatusBar {
     private const int LINES_INDEX_FONT = 1;
     private const int LINES_INDEX_COLOR = 2;
     private const int LINES_INDEX_BACKGROUND = 3;
-    private const int LINES_INDEX_CONTENT_START = 4;
+    private const int LINES_INDEX_USE_WINDOWS_KEY = 4;
+    private const int LINES_INDEX_CONTENT_START = 5;
 
     internal static string FolderName() {
       string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -115,6 +116,12 @@ namespace StatusBar {
       }
     }
 
+    public static bool UseWindowsKey {
+      get {
+        return (myself.CleanLines?.Skip(LINES_INDEX_USE_WINDOWS_KEY)?.First() ?? "0").ToLower() == "1";
+      }
+    }
+
     public static IEnumerable<string> Lines {
       get {
         return from line in myself.CleanLines.Skip(LINES_INDEX_CONTENT_START) select line;
@@ -145,6 +152,7 @@ namespace StatusBar {
         COMMENT + " The second line defines the font.",
         COMMENT + " The third line defines the text color.",
         COMMENT + " The fourth line defines the background color.",
+        COMMENT + " The fifts line defines rather or not to catch the win key (1|0)",
         COMMENT + " The following lines define the content.",
         COMMENT + " ",
         COMMENT + " A change of the Position requires a restart of the statusbar.",
@@ -185,6 +193,10 @@ namespace StatusBar {
       lines.Add("");
       lines.Add(COMMENT + " BACKGROUND:");
       lines.Add(DEFAULT_BACKGROUND);
+
+      lines.Add("");
+      lines.Add(COMMENT + " USE WIN KEY:");
+      lines.Add("1");
 
       lines.Add("");
       lines.Add(COMMENT + " CONTENT_LEFT:");
