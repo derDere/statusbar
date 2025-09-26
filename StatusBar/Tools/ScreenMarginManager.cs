@@ -24,14 +24,14 @@ namespace StatusBar.Tools {
     }
 
     private struct AppBarData {
-      #pragma warning disable S1144, S4487
+#pragma warning disable S1144, S4487
       public int cbSize;
       public IntPtr hWnd;
       public int uCallbackMessage;
       public int uEdge;
       public AppBarPlacement rc;
       public int lParam;
-      #pragma warning restore S1144, S4487
+#pragma warning restore S1144, S4487
     }
 
     private struct AppBar {
@@ -159,9 +159,13 @@ namespace StatusBar.Tools {
           AppBarData data = new AppBarData();
           Forms.Form bar = BarFactory();
           data.hWnd = bar.Handle;
-          SHAppBarMessage(ABM_._NEW, ref data);
+          if (!Debugger.IsAttached) {
+            SHAppBarMessage(ABM_._NEW, ref data);
+          }
           ApplyMarginToData(md, ref data, r);
-          SHAppBarMessage(ABM_._SETPOS, ref data);
+          if (!Debugger.IsAttached) {
+            SHAppBarMessage(ABM_._SETPOS, ref data);
+          }
           this.currentAppBars.Add(new AppBar { bar = bar, data = data });
         }
       }
@@ -180,7 +184,9 @@ namespace StatusBar.Tools {
         int index = this.currentAppBars.Count - 1;
         AppBar ab = this.currentAppBars[index];
         AppBarData data = ab.data;
-        SHAppBarMessage(ABM_._REMOVE, ref data);
+        if (!Debugger.IsAttached) {
+          SHAppBarMessage(ABM_._REMOVE, ref data);
+        }
         this.currentAppBars.RemoveAt(index);
         ab.bar.Close();
       }

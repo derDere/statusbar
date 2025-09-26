@@ -59,15 +59,19 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Config\Config.cs" />
+    <Compile Include="Config\IconConfig.cs" />
     <Compile Include="Control\BarContent.xaml.cs">
       <DependentUpon>BarContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Control\Tile.xaml.cs">
+      <DependentUpon>Tile.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\ContentProvider.cs" />
     <Compile Include="Window\Bar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Window\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Window\AppMenu.xaml.cs">
+      <DependentUpon>AppMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -78,7 +82,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\MainWindow.xaml">
+    <Page Include="Control\Tile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window\AppMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

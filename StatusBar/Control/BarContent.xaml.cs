@@ -22,6 +22,21 @@ namespace StatusBar.Control {
   /// </summary>
   public partial class BarContent : UserControl {
 
+    // -------------------------------------------------------------------
+    // Menu-Button click event
+    public delegate void MenuButtonClickedHandler(object sender, EventArgs e);
+    public event MenuButtonClickedHandler MenuButtonClicked;
+    public delegate void GlobalMenuButtonClickedHandler(EventArgs e);
+    public static event GlobalMenuButtonClickedHandler GlobalMenuButtonClicked;
+    [System.Diagnostics.DebuggerHidden]
+    protected virtual void OnMenuButtonClicked(EventArgs e) { }
+    [System.Diagnostics.DebuggerHidden]
+    private void RaiseMenuButtonClicked(EventArgs e) {
+      OnMenuButtonClicked(e);
+      MenuButtonClicked?.Invoke(this, e);
+      GlobalMenuButtonClicked?.Invoke(e);
+    }
+
     private static Tools.ContentProvider contentProvider = null;
 
     private DispatcherTimer timer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(1) };
@@ -167,6 +182,10 @@ namespace StatusBar.Control {
       ) {
         System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + path + "\"");
       }
+    }
+
+    private void MenuBtn_Click(object sender, RoutedEventArgs e) {
+      RaiseMenuButtonClicked(e);
     }
   }
 }

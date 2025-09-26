@@ -1,0 +1,24 @@
+﻿<Window x:Class="StatusBar.Window.AppMenu" x:Name="Win"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StatusBar.Window"
+        mc:Ignorable="d" Deactivated="Win_Deactivated"
+        d:Width="600" d:Height="300"
+        MinWidth="64" MinHeight="64"
+        Title="Start Menu" ResizeMode="NoResize"
+        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+        ShowInTaskbar="False" Topmost="True" UseLayoutRounding="True" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" SizeToContent="WidthAndHeight">
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="ReloadMI" Icon="{StaticResource ReloadIcon}" Header="Reload Icons" Click="ReloadMI_Click"/>
+        </ContextMenu>
+    </Window.ContextMenu>
+    <Border x:Name="Border" Background="#CC000000" BorderThickness="1" BorderBrush="#000">
+        <Grid x:Name="ContentGrid" Margin="2">
+
+        </Grid>
+    </Border>
+</Window>

@@ -16,7 +16,7 @@ namespace StatusBar {
     private const string FOLDER_NAME = "StatusBar";
     private const string FILE_NAME = "config.txt";
 
-    private const string COMMENT = "//";
+    internal const string COMMENT = "//";
 
     private const string DEFAULT_POSITION = "bottom";
     internal const string DEFAULT_FONT = "Consolas";
@@ -32,7 +32,7 @@ namespace StatusBar {
     private const int LINES_INDEX_BACKGROUND = 3;
     private const int LINES_INDEX_CONTENT_START = 4;
 
-    internal static string FileName() {
+    internal static string FolderName() {
       string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
       if (!IO.Directory.Exists(path))
         IO.Directory.CreateDirectory(path);
@@ -40,6 +40,12 @@ namespace StatusBar {
       path = IO.Path.Combine(path, FOLDER_NAME);
       if (!IO.Directory.Exists(path))
         IO.Directory.CreateDirectory(path);
+
+      return path;
+    }
+
+    internal static string FileName() {
+      string path = FolderName();
 
       path = IO.Path.Combine(path, FILE_NAME);
 

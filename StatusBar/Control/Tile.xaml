@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="StatusBar.Control.Tile"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StatusBar.Control"
+             mc:Ignorable="d" 
+             d:DesignHeight="128" d:DesignWidth="128">
+    <Border x:Name="Border" Margin="5" BorderBrush="White" BorderThickness="1" Background="RED" CornerRadius="6">
+        <Grid>
+            <Viewbox x:Name="ViewB" Margin="10 10 10 30">
+                <ContentControl x:Name="IconCC" Foreground="White" FontFamily="DejaVuSansM Nerd Font Mono">X</ContentControl>
+            </Viewbox>
+            <TextBlock x:Name="TitleTxb" Margin="10 0 10 10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" TextWrapping="Wrap" Foreground="White" FontFamily="DejaVuSansM Nerd Font Mono">
+                <Run>???</Run>
+            </TextBlock>
+
+            <Button x:Name="TriggerBtn" Margin="0" Click="TriggerBtn_Click">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="Bor" CornerRadius="6" Background="Transparent"></Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bor" Property="Background" Value="#13FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bor" Property="Background" Value="#37FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bor" Property="Background" Value="{x:Null}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+    </Border>
+</UserControl>
