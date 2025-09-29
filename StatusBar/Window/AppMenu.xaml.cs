@@ -75,7 +75,9 @@ namespace StatusBar.Window {
         GenerateIcons();
       }
       this.Show();
+      this.BringIntoView();
       this.Activate();
+      this.Focus();
       _isOpen = true;
     }
 

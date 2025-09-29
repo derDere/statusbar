@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Markup;
+using System.Windows.Threading;
 using Forms = System.Windows.Forms;
 
 namespace StatusBar.Tools {
@@ -65,6 +68,8 @@ namespace StatusBar.Tools {
     private readonly List<AppBar> currentAppBars;
     private readonly List<MarginData> _bars;
     private readonly Func<Forms.Form> BarFactory;
+    private DispatcherTimer ApplyMarginsPart2Timer;
+    private DispatcherTimer ApplyMarginsPart3Timer;
     #endregion
 
     #region Construction
@@ -73,6 +78,13 @@ namespace StatusBar.Tools {
       this.currentLayout = "<None>";
       this.currentAppBars = new List<AppBar>();
       this.BarFactory = BarFactory;
+    }
+
+    private static TimeSpan DefaultTimerInterval() {
+      if (Debugger.IsAttached) {
+        return TimeSpan.Zero;
+      }
+      return TimeSpan.FromSeconds(5);
     }
     #endregion
 
@@ -152,24 +164,59 @@ namespace StatusBar.Tools {
       }
     }
 
+    private static void call_SHAppBarMessage(ABM_ dwMessage, ref AppBarData pData) {
+      if (!Debugger.IsAttached) {
+        SHAppBarMessage(dwMessage, ref pData);
+      }
+    }
+
     public void ApplyMargins() {
+      if (ApplyMarginsPart2Timer == null) {
+        ApplyMarginsPart2Timer = new DispatcherTimer() {
+          Interval = DefaultTimerInterval()
+        };
+        ApplyMarginsPart2Timer.Tick += ApplyMarginsPart2Timer_Tick;
+      }
+
       RemoveMargins();
+
+      ApplyMarginsPart2Timer.Start();
+    }
+
+    private void ApplyMarginsPart2Timer_Tick(object sender, EventArgs e) {
+      ApplyMarginsPart2Timer.Stop();
+      ApplyMarginsPart2();
+    }
+
+    private void ApplyMarginsPart2() {
+      if (ApplyMarginsPart3Timer == null) {
+        ApplyMarginsPart3Timer = new DispatcherTimer() {
+          Interval = DefaultTimerInterval()
+        };
+        ApplyMarginsPart3Timer.Tick += ApplyMarginsPart3Timer_Tick;
+      }
+
       foreach (System.Drawing.Rectangle r in from screen in Forms.Screen.AllScreens select screen.WorkingArea) {
         foreach (MarginData md in this._bars) {
           AppBarData data = new AppBarData();
           Forms.Form bar = BarFactory();
           data.hWnd = bar.Handle;
-          if (!Debugger.IsAttached) {
-            SHAppBarMessage(ABM_._NEW, ref data);
-          }
+          call_SHAppBarMessage(ABM_._NEW, ref data);
           ApplyMarginToData(md, ref data, r);
-          if (!Debugger.IsAttached) {
-            SHAppBarMessage(ABM_._SETPOS, ref data);
-          }
+          call_SHAppBarMessage(ABM_._SETPOS, ref data);
           this.currentAppBars.Add(new AppBar { bar = bar, data = data });
         }
       }
 
+      ApplyMarginsPart3Timer.Start();
+    }
+
+    private void ApplyMarginsPart3Timer_Tick(object sender, EventArgs e) {
+      ApplyMarginsPart3Timer.Stop();
+      ApplyMarginsPart3();
+    }
+
+    private void ApplyMarginsPart3() {
       foreach (AppBar ab in this.currentAppBars) {
         ab.bar.Top = ab.data.rc.Top;
         ab.bar.Left = ab.data.rc.Left;
@@ -184,9 +231,7 @@ namespace StatusBar.Tools {
         int index = this.currentAppBars.Count - 1;
         AppBar ab = this.currentAppBars[index];
         AppBarData data = ab.data;
-        if (!Debugger.IsAttached) {
-          SHAppBarMessage(ABM_._REMOVE, ref data);
-        }
+        call_SHAppBarMessage(ABM_._REMOVE, ref data);
         this.currentAppBars.RemoveAt(index);
         ab.bar.Close();
       }
