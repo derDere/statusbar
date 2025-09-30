@@ -21,10 +21,10 @@
                         <Border Name="Bor" CornerRadius="6" Background="Transparent"></Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bor" Property="Background" Value="#13FFFFFF"/>
+                                <Setter TargetName="Bor" Property="Background" Value="#37FFFFFF"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bor" Property="Background" Value="#37FFFFFF"/>
+                                <Setter TargetName="Bor" Property="Background" Value="#37000000"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="Bor" Property="Background" Value="{x:Null}" />

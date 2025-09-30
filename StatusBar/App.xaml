@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:StatusBar" ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
 
+        <Image x:Key="LoadingFailedImage" x:Shared="true" Source="/Resources/cross.png"/>
+
         <Viewbox x:Key="ReloadIcon" x:Shared="false" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
             <Grid>
                 <Path

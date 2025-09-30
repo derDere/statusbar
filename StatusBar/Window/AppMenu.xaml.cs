@@ -43,6 +43,8 @@ namespace StatusBar.Window {
     public AppMenu(Bar parent) {
       InitializeComponent();
 
+      Tile.GlobalTileProcessStarting += Tile_GlobalTileProcessStarting;
+
       Brush bru;
       try {
         bru = (Brush)(new BrushConverter().ConvertFromString(BarContent.contentProvider.ApplyTo(Config.BackgroundColor)));
@@ -55,6 +57,10 @@ namespace StatusBar.Window {
 
       bar = parent;
       ReloadIcons();
+    }
+
+    private void Tile_GlobalTileProcessStarting(EventArgs e) {
+      CloseMenu();
     }
 
     public void ReloadIcons() {
@@ -91,8 +97,8 @@ namespace StatusBar.Window {
     }
 
     private void CheckColsRows(Tile.TilePosition pos) {
-      int maxColCount = pos.Column + pos.ColSpan;
-      int maxRowCount = pos.Row + pos.RowSpan;
+      int maxColCount = pos.Column + pos.GetValidColSpan();
+      int maxRowCount = pos.Row + pos.GetValidRowSpan();
 
       while (maxColCount > ContentGrid.ColumnDefinitions.Count) {
         ColumnDefinition col = new ColumnDefinition();
@@ -113,8 +119,8 @@ namespace StatusBar.Window {
       ContentGrid.Children.Add(tile);
       Grid.SetColumn(tile, tile.MenuPosition.Column);
       Grid.SetRow(tile, tile.MenuPosition.Row);
-      Grid.SetColumnSpan(tile, tile.MenuPosition.ColSpan);
-      Grid.SetRowSpan(tile, tile.MenuPosition.RowSpan);
+      Grid.SetColumnSpan(tile, tile.MenuPosition.GetValidColSpan());
+      Grid.SetRowSpan(tile, tile.MenuPosition.GetValidRowSpan());
     }
 
     private void GenerateIcons() {
