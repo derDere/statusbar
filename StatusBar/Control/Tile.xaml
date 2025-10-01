@@ -11,7 +11,7 @@
             <Viewbox x:Name="ViewB" Margin="10 10 10 30">
                 <ContentControl x:Name="IconCC" Foreground="White" FontFamily="DejaVuSansM Nerd Font Mono">X</ContentControl>
             </Viewbox>
-            <TextBlock x:Name="TitleTxb" Margin="10 0 10 10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" TextWrapping="Wrap" Foreground="White" FontFamily="DejaVuSansM Nerd Font Mono">
+            <TextBlock x:Name="TitleTxb" Margin="10 0 10 10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" TextWrapping="Wrap" Foreground="White" FontFamily="DejaVuSansM Nerd Font Mono" FontSize="10">
                 <Run>???</Run>
             </TextBlock>
 
