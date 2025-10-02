@@ -1,4 +1,5 @@
 ﻿using StatusBar.Tools;
+using StatusBar.Window;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -291,15 +292,20 @@ namespace StatusBar.Control {
     private void WidgetTicket_Tick(object sender, EventArgs e) {
       widgetTicket.Stop();
       if (myConfig.IsWidget) {
-        ProcessStartInfo psi = GetPSI();
-        if (psi == null) {
-          return;
+        if (AppMenu.IsMenuOpen) {
+          ProcessStartInfo psi = GetPSI();
+          if (psi == null) {
+            return;
+          }
+          psi.RedirectStandardOutput = true;
+          psi.UseShellExecute = false;
+          psi.CreateNoWindow = true;
+          psi.StandardOutputEncoding = System.Text.Encoding.UTF8;
+          bgw.RunWorkerAsync(psi);
         }
-        psi.RedirectStandardOutput = true;
-        psi.UseShellExecute = false;
-        psi.CreateNoWindow = true;
-        psi.StandardOutputEncoding = System.Text.Encoding.UTF8;
-        bgw.RunWorkerAsync(psi);
+        else {
+          widgetTicket.Start();
+        }
       }
     }
 

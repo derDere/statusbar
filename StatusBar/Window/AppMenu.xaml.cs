@@ -25,6 +25,13 @@ namespace StatusBar.Window {
     private IEnumerable<IconConfig> icons;
     private Bar bar;
 
+    private static bool _IsMenuOpen = false;
+    public static bool IsMenuOpen {
+      get {
+        return _IsMenuOpen;
+      }
+    }
+
     private bool _isOpen = false;
     public bool IsOpen {
       get {
@@ -37,6 +44,7 @@ namespace StatusBar.Window {
         else {
           CloseMenu();
         }
+        _IsMenuOpen = _isOpen;
       }
     }
 
